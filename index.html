@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>店じまいの合図 - 高瀬航 × 小野寺由衣</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;600;800&family=Zen+Kaku+Gothic+New:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="game-container">
+    <!-- 背景レイヤー -->
+    <div id="bg-layer" class="bg-fade">
+      <div id="bg-image"></div>
+      <div id="bg-overlay"></div>
+      <div id="vignette"></div>
+    </div>
+
+    <!-- 鼓動エフェクトレイヤー -->
+    <div id="heartbeat-pulse"></div>
+    <div id="screen-flash"></div>
+
+    <!-- 立ち絵レイヤー -->
+    <div id="character-layer">
+      <div id="sprite-takase" class="sprite">
+        <img id="img-takase" src="assets/takase_main.png" alt="高瀬航">
+      </div>
+      <div id="sprite-yui" class="sprite">
+        <img id="img-yui" src="assets/yui_main.png" alt="小野寺由衣">
+      </div>
+    </div>
+
+    <!-- 上部ヘッダー（操作バー） -->
+    <header id="top-bar">
+      <div class="header-title">店じまいの合図</div>
+      <div class="header-controls">
+        <button id="btn-sound" class="ctrl-btn" title="サウンド切替">🔇 BGM</button>
+        <button id="btn-auto" class="ctrl-btn" title="オート再生">AUTO</button>
+        <button id="btn-log" class="ctrl-btn" title="バックログ">LOG</button>
+      </div>
+    </header>
+
+    <!-- 心拍数インジケーター（右上に表示） -->
+    <div id="heart-rate-meter">
+      <span class="heart-icon">♥</span>
+      <span id="bpm-value">78</span>
+      <span class="bpm-unit">BPM</span>
+    </div>
+
+    <!-- メッセージウィンドウ -->
+    <main id="dialogue-box">
+      <div id="speaker-badge">
+        <span id="speaker-name"></span>
+      </div>
+      <div id="dialogue-content">
+        <p id="dialogue-text"></p>
+        <span id="next-cursor">▼</span>
+      </div>
+    </main>
+
+    <!-- 選択肢オーバーレイ -->
+    <div id="choices-overlay" class="hidden">
+      <div class="choices-header">どう応じる？</div>
+      <div id="choices-list"></div>
+    </div>
+
+    <!-- バックログオーバーレイ -->
+    <div id="log-overlay" class="hidden">
+      <div class="log-header">
+        <span>LOG</span>
+        <button id="btn-close-log" class="close-btn">×</button>
+      </div>
+      <div id="log-list"></div>
+    </div>
+
+    <!-- タイトル画面 -->
+    <div id="title-screen">
+      <div class="title-bg"></div>
+      <div class="title-content">
+        <div class="title-sub">Personal Trainer × Client Secret Session</div>
+        <h1 class="title-main">店じまいの合図</h1>
+        <div class="title-chara-tag">高瀬 航（32） × 小野寺 由衣（29）</div>
+        <p class="title-caption">「今日はこれで店じまいだから。……奥のベッド、行きましょうか」</p>
+        <div class="title-buttons">
+          <button id="btn-start" class="primary-btn">はじめる</button>
+          <button id="btn-gallery" class="sub-btn">スチルギャラリー</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ギャラリーモーダル -->
+    <div id="gallery-overlay" class="hidden">
+      <div class="gallery-header">
+        <span>GALLERY</span>
+        <button id="btn-close-gallery" class="close-btn">×</button>
+      </div>
+      <div class="gallery-grid">
+        <div class="gallery-item" data-src="assets/takase_main.png"><img src="assets/takase_main.png" alt="高瀬 航"><div class="caption">高瀬 航</div></div>
+        <div class="gallery-item" data-src="assets/yui_main.png"><img src="assets/yui_main.png" alt="小野寺 由衣"><div class="caption">小野寺 由衣</div></div>
+        <div class="gallery-item" data-src="assets/scene_1.png"><img src="assets/scene_1.png" alt="Scene 1"><div class="caption">フロアでの追い込み</div></div>
+        <div class="gallery-item" data-src="assets/scene_2.png"><img src="assets/scene_2.png" alt="Scene 2"><div class="caption">密室の施術ベッド</div></div>
+        <div class="gallery-item" data-src="assets/scene_3.png"><img src="assets/scene_3.png" alt="Scene 3"><div class="caption">深部の解放</div></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="scenario.js"></script>
+  <script src="sound.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
