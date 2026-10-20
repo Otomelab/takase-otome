@@ -15,28 +15,28 @@ window.SCENARIO_DATA = {
     // ===== SESSION 1: 初回お得体験プラン =====
     session1_intro: [
       {
-        bg: 'assets/scene_1.png',
+        bg: 'assets/bg_entrance.png',
         chara: null,
         speaker: '',
         text: '雑居ビルの3階。エレベーターを降りると、アロマと微かな消毒液の匂いが混ざった、静かで清潔なプライベートサロンの扉があった。',
         bpm: 78
       },
       {
-        bg: 'assets/scene_1.png',
+        bg: 'assets/bg_entrance.png',
         chara: 'takase',
         speaker: '高瀬',
         text: 'あ、いらっしゃい。小野寺さんですね？ どうぞ、上がってください',
         bpm: 80
       },
       {
-        bg: 'assets/scene_1.png',
+        bg: 'assets/bg_entrance.png',
         chara: 'takase',
         speaker: '',
-        text: 'チャコールの施術用ポロシャツを着た長身の男が、爽やかに笑ってスリッパを差し出してきた。高瀬航。右頬に浅いえくぼがあって、どこか人懐っこい雰囲気がある。',
+        text: 'チャコールの施術用ポロシャツを着た長身の甴が、爽やかに笑ってスリッパを差し出してきた。高瀬航。右頬に浅いえくぼがあって、どこか人懐っこい雰囲気がある。',
         bpm: 82
       },
       {
-        bg: 'assets/scene_1.png',
+        bg: 'assets/bg_entrance.png',
         chara: 'yui',
         face: '02',
         speaker: '由衣',
@@ -44,7 +44,7 @@ window.SCENARIO_DATA = {
         bpm: 84
       },
       {
-        bg: 'assets/scene_1.png',
+        bg: 'assets/bg_entrance.png',
         chara: 'takase',
         face: '笑顔',
         speaker: '高瀬',
@@ -52,7 +52,7 @@ window.SCENARIO_DATA = {
         bpm: 82
       },
       {
-        bg: 'assets/scene_1.png',
+        bg: 'assets/bg_entrance.png',
         chara: 'takase',
         face: '真顔',
         speaker: '高瀬',
@@ -67,7 +67,7 @@ window.SCENARIO_DATA = {
 
     session1_choice_train: [
       {
-        bg: 'assets/scene_1.png',
+        bg: 'assets/bg_entrance.png',
         chara: 'takase',
         speaker: '高瀬',
         text: 'お、やる気満々ですね。いいですよ、じゃあまずはガッツリ下半身から動かして、代謝上げていきましょうか',
@@ -78,7 +78,7 @@ window.SCENARIO_DATA = {
 
     session1_choice_both: [
       {
-        bg: 'assets/scene_1.png',
+        bg: 'assets/bg_entrance.png',
         chara: 'takase',
         speaker: '高瀬',
         text: '了解です。じゃあトレーニングでどこが使えてないか炙り出してから、最後にしっかり整えましょう',
@@ -89,7 +89,7 @@ window.SCENARIO_DATA = {
 
     session1_training: [
       {
-        bg: 'assets/scene_1.png',
+        bg: 'assets/bg_training.png',
         chara: 'yui',
         face: '11',
         speaker: '由衣',
@@ -98,7 +98,7 @@ window.SCENARIO_DATA = {
         effect: 'pulse'
       },
       {
-        bg: 'assets/scene_1.png',
+        bg: 'assets/bg_training.png',
         chara: 'takase',
         face: '楽しみ',
         speaker: '高瀬',
@@ -106,7 +106,7 @@ window.SCENARIO_DATA = {
         bpm: 115
       },
       {
-        bg: 'assets/scene_1.png',
+        bg: 'assets/bg_training.png',
         chara: null,
         speaker: '',
         text: 'タイマーのブザーが鳴り、由衣はその場にへたり込みそうになった。膝が小鹿のように細かく震えている。',
@@ -114,7 +114,7 @@ window.SCENARIO_DATA = {
         effect: 'pulse'
       },
       {
-        bg: 'assets/scene_1.png',
+        bg: 'assets/bg_training.png',
         chara: 'takase',
         face: '笑顔',
         speaker: '高瀬',
@@ -122,7 +122,7 @@ window.SCENARIO_DATA = {
         bpm: 115
       },
       {
-        bg: 'assets/scene_1.png',
+        bg: 'assets/bg_training.png',
         chara: 'takase',
         face: '真顔',
         speaker: '',
@@ -131,7 +131,7 @@ window.SCENARIO_DATA = {
         effect: 'pulse'
       },
       {
-        bg: 'assets/scene_1.png',
+        bg: 'assets/bg_training.png',
         chara: 'yui',
         face: '08',
         speaker: '由衣',
@@ -139,7 +139,7 @@ window.SCENARIO_DATA = {
         bpm: 130
       },
       {
-        bg: 'assets/scene_1.png',
+        bg: 'assets/bg_training.png',
         chara: 'takase',
         face: '笑顔',
         speaker: '高瀬',
@@ -147,7 +147,7 @@ window.SCENARIO_DATA = {
         bpm: 128
       },
       {
-        bg: 'assets/scene_1.png',
+        bg: 'assets/bg_training.png',
         chara: 'takase',
         face: '色気',
         speaker: '高瀬',
@@ -156,7 +156,7 @@ window.SCENARIO_DATA = {
         effect: 'pulse'
       },
       {
-        bg: 'assets/scene_1.png',
+        bg: 'assets/bg_training.png',
         chara: 'yui',
         face: '09',
         speaker: '由衣',
@@ -164,14 +164,14 @@ window.SCENARIO_DATA = {
         bpm: 138
       },
       {
-        bg: 'assets/scene_1.png',
+        bg: 'assets/bg_training.png',
         chara: 'takase',
         speaker: '高瀬',
         text: 'ふーん……そうなんですかね。ま、そういうことにしておきましょうか',
         bpm: 126
       },
       {
-        bg: 'assets/scene_2.png',
+        bg: 'assets/bed.png',
         chara: 'takase',
         speaker: '高瀬',
         text: '今日はお得プランの特典で、10分だけ整体の体験も付いてます。奥のベッド、行きましょうか',
@@ -185,22 +185,22 @@ window.SCENARIO_DATA = {
 
     session1_bed_obedient: [
       {
-        bg: 'assets/scene_2.png',
+        bg: 'assets/bed.png',
         chara: 'takase',
         speaker: '高瀬',
         text: 'はい、うつ伏せで楽にしてくださいね。……肩甲骨周り、かなりガチガチだ',
         bpm: 110
       },
       {
-        bg: 'assets/scene_2.png',
+        bg: 'assets/bed.png',
         chara: null,
         speaker: '',
-        text: 'Tシャツの上から、高瀬の厚みのある温かい掌が肩から背中へと置かれる。無駄のない的確な圧が加わるたび、痛気持ちいい快感が背筋を駆け抜ける。',
+        text: 'Tシャツの上から、高瀬の厚みのある温かい掌が肩から背中へと置かゎる。無駄のない的確な圧が加わるたび、痛気持ちいい快感が背筋を駆け抜ける。',
         bpm: 115,
         effect: 'pulse'
       },
       {
-        bg: 'assets/scene_2.png',
+        bg: 'assets/bed.png',
         chara: 'takase',
         speaker: '高瀬',
         text: '息吐いて。力抜かないと奥まで届かないですよ',
@@ -211,17 +211,17 @@ window.SCENARIO_DATA = {
 
     session1_bed_hesitate: [
       {
-        bg: 'assets/scene_2.png',
+        bg: 'assets/bed.png',
         chara: 'takase',
         speaker: '高瀬',
-        text: '遠慮しなくていいのに。プランに含まれてるんだから、使わないと損ですよ？',
+        text: '逘慧しなくていいのに。プランに含まれてるんだから、使わないと損ですよ？',
         bpm: 115
       },
       {
-        bg: 'assets/scene_2.png',
+        bg: 'assets/bed.png',
         chara: 'takase',
         speaker: '',
-        text: '有無を言わせずベッドへ促され、由衣は観念して横たわった。高瀬の手が首筋から肩のラインを丁寧になぞるようにほぐしていく。プロの技術に、強張っていた身体がじんわりとほどけていく。',
+        text: '有無を言わせずベッドへ促され、由衣は観念して横たわった。高瀬の手が首筋から肩のラインを丁寧になぞるようにほあしていく。プロの技術に、強張っていた身体がじんわりとほどけていく。',
         bpm: 112,
         nextScene: 'session1_wrapup'
       }
@@ -229,42 +229,42 @@ window.SCENARIO_DATA = {
 
     session1_wrapup: [
       {
-        bg: 'assets/scene_1.png',
+        bg: 'assets/bg_entrance.png',
         chara: 'takase',
         speaker: '高瀬',
-        text: 'はい、今日の初回セッションはここまでです。お疲れさまでした！',
+        text: 'はい、今日の初回セッションはここまです。お疲れさまでした！',
         bpm: 85
       },
       {
-        bg: 'assets/scene_1.png',
+        bg: 'assets/bg_entrance.png',
         chara: 'takase',
         speaker: '高瀬',
         text: 'うち、入会金とか月額の縛りやってないんで。都度払いで、また体がキツくなったり動かしたくなったらLINEで気軽に連絡してください',
         bpm: 82
       },
       {
-        bg: 'assets/scene_1.png',
+        bg: 'assets/bg_entrance.png',
         chara: 'yui',
         speaker: '由衣',
         text: 'あ、はい……ありがとうございます。都度払いなんですね、助かります……',
         bpm: 86
       },
       {
-        bg: 'assets/scene_1.png',
+        bg: 'assets/bg_entrance.png',
         chara: 'takase',
         speaker: '高瀬',
         text: 'じゃあ、お気をつけて。水分たくさん取って、湯船浸かってくださいね',
         bpm: 80
       },
       {
-        bg: 'assets/scene_1.png',
+        bg: 'assets/bg_entrance.png',
         chara: null,
         speaker: '',
         text: 'あれだけ触れられて心臓を跳ねさせられたのに、高瀬は引き止める気配すらなく、あまりに爽やかに送り出してくれた。\n手首に残った熱い感触だけが、帰りの夜風の中でいつまでも消えなかった。',
         bpm: 88
       },
       {
-        bg: 'assets/takase_main.png',
+        bg: 'assets/title_bg.png',
         chara: 'takase',
         speaker: '',
         text: '【Session 1 終了】\n画面右上の「📋 カルテ」または下のボタンから高瀬の裏カルテを閲覧できます。',
