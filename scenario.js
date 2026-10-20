@@ -278,7 +278,8 @@ window.SCENARIO_DATA = {
         text: '【Session 1 終了】\n画面右上の「📋 カルテ」または下のボタンから高瀬の裏カルテを閲覧できます。',
         bpm: 78,
         isSessionEnd: true,
-        sessionKey: 'session1'
+        sessionKey: 'session1',
+        nextSessionStart: 'session2_intro'
       }
     ]
   }

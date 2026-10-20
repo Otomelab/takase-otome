@@ -2,6 +2,16 @@
 class NovelEngine {
   constructor() {
     this.scenario = window.SCENARIO_DATA;
+    this.currentSessionKey = 'session1';
+
+    // 各セッションデータを統合
+    [window.SCENARIO_SESSION2, window.SCENARIO_SESSION3, window.SCENARIO_SESSION4,
+     window.SCENARIO_SESSION5, window.SCENARIO_SESSION6, window.SCENARIO_SESSION7].forEach(s => {
+      if (s) {
+        if (s.scenes) Object.assign(this.scenario.scenes, s.scenes);
+        if (s.secretNotes) Object.assign(this.scenario.secretNotes, s.secretNotes);
+      }
+    });
     this.currentSceneId = null;
     this.stepIndex = 0;
     this.history = [];
@@ -296,6 +306,24 @@ class NovelEngine {
       return;
     }
 
+    // セッション終了と次のセッションへの継続
+    if (item.isSessionEnd) {
+      if (item.sessionKey) this.currentSessionKey = item.sessionKey;
+      if (item.nextSessionStart) {
+        // 次のセッションへ進む選択肢または継続ボタン
+        this.showChoices([
+          { text: '次のセッションへ進む ▶', target: item.nextSessionStart },
+          { text: 'タイトルへ戻る', target: 'title_return' }
+        ]);
+        return;
+      } else {
+        // 全セッション終了
+        this.titleScreen.classList.remove('hidden');
+        this.titleScreen.style.opacity = '1';
+        return;
+      }
+    }
+
     // シーン遷移
     if (item.nextScene) {
       this.loadScene(item.nextScene, 0);
@@ -319,7 +347,12 @@ class NovelEngine {
         e.stopPropagation();
         window.sound.playTap();
         this.choicesOverlay.classList.add('hidden');
-        this.loadScene(c.target, 0);
+        if (c.target === 'title_return') {
+          this.titleScreen.classList.remove('hidden');
+          this.titleScreen.style.opacity = '1';
+        } else {
+          this.loadScene(c.target, 0);
+        }
       });
       this.choicesList.appendChild(btn);
     });
@@ -356,6 +389,12 @@ class NovelEngine {
 
   // 高瀬の裏カルテ
   openSecretRecord() {
+    const noteData = (this.scenario.secretNotes && this.scenario.secretNotes[this.currentSessionKey]) ||
+      (this.scenario.secretNotes && this.scenario.secretNotes.session1) || {};
+    const title = noteData.title || '高瀬の電子カルテ：小野寺由衣 様';
+    const pub = (noteData.publicNote || '').replace(/\n/g, '<br>');
+    const sec = (noteData.secretNote || '').replace(/\n/g, '<br>');
+
     const modal = document.createElement('div');
     modal.id = 'secret-record-modal';
     modal.style.cssText = `
@@ -370,24 +409,19 @@ class NovelEngine {
       </div>
       <div style="flex:1; overflow-y:auto; padding:18px 0; font-family:var(--font-gothic); line-height:1.7; font-size:13px;">
         <div style="background:rgba(255,255,255,0.05); padding:12px; border-radius:8px; margin-bottom:14px; border-left:3px solid #d4af37;">
-          <div style="font-size:11px; color:#9b95a8;">氏名 / 区分</div>
-          <div style="font-size:15px; font-weight:700; color:#fff; margin-top:2px;">小野寺 由衣 様（29）/ 初回体験</div>
+          <div style="font-size:11px; color:#9b95a8;">カルテ標題</div>
+          <div style="font-size:14px; font-weight:700; color:#fff; margin-top:2px;">${title}</div>
         </div>
         <div style="margin-bottom:16px;">
           <div style="font-size:11px; color:#d4af37; font-weight:700; margin-bottom:4px;">【電子カルテ公式記録】</div>
           <p style="color:#d0c8db; background:rgba(0,0,0,0.3); padding:10px; border-radius:6px;">
-            デスクワークによる肩甲帯・胸椎の伸展制限あり。右股関節外旋可動域軽度低下。
-            本人は『トレーニング中心で鍛えたい』と意欲的。筋力・フォームの勘は良いが呼吸が浅く力みやすい。都度利用案内済み。
+            ${pub}
           </p>
         </div>
         <div>
           <div style="font-size:11px; color:#d64562; font-weight:700; margin-bottom:4px;">【高瀬 航 / 非公開メモ】</div>
           <p style="color:#ffc5d3; background:rgba(214,69,98,0.12); padding:12px; border-radius:6px; border:1px solid rgba(214,69,98,0.25); font-style:italic;">
-            『鍛えに来た』って最初めちゃくちゃ意地張ってて笑った。
-            でも手首掴んで脈測っただけで心拍130超え。警戒して耳まで真っ赤になってんの隠せてない。
-            自分で思ってるより10倍身体委ねたがってるタイプ。
-            整体入れた時、声漏れそうになって耐えてた顔が最高に良かった。
-            縛りなしの都度払いにしたから、次は向こうからLINEしてくるはず。
+            ${sec}
           </p>
         </div>
       </div>
