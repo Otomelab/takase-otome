@@ -258,7 +258,7 @@ html, body {
   right: 12px;
   bottom: calc(env(safe-area-inset-bottom, 32px) + 56px);
   z-index: 10;
-  min-height: 155px;
+  min-height: 160px; padding-bottom: 24px;
   background: var(--bg-box);
   border: 1px solid var(--border-glass);
   border-radius: 14px;
