@@ -1,234 +1,229 @@
-// ===== 高瀬航 × 小野寺由衣 『店じまいの合図』シナリオデータ =====
+// ===== 高瀬航 × 小野寺由衣 『店じまいの合図』 シナリオデータ =====
+// 全7回構成：第1回「初回お得体験プラン（意地と手首の脈測り）」
+
 window.SCENARIO_DATA = {
-  startScene: 'scene_training_end',
+  startScene: 'session1_intro',
   scenes: {
-    // --- プロローグ：トレーニング終了と脈の計測 ---
-    scene_training_end: [
+    session1_intro: [
       {
         bg: 'assets/scene_1.png',
-        chara: 'both',
-        speaker: '由衣',
-        text: '……っ、はぁ……っ、もう無理……足、生まれたての小鹿みたい……',
-        bpm: 95,
-        effect: 'pulse'
+        chara: null,
+        speaker: '',
+        text: '雑居ビルの3階。エレベーターを降りると、アロマと微かな消毒液の匂いが混ざった、静かで清潔なプライベートサロンの扉があった。',
+        bpm: 78
       },
       {
         bg: 'assets/scene_1.png',
         chara: 'takase',
         speaker: '高瀬',
-        text: 'はい、ラスト3セット終了。お疲れさまです。いい追い込みでしたよ',
-        bpm: 98
+        text: 'あ、いらっしゃい。小野寺さんですね？ どうぞ、上がってください',
+        bpm: 80
       },
       {
         bg: 'assets/scene_1.png',
         chara: 'takase',
         speaker: '',
-        text: 'タオルを手渡しながら、高瀬の手が由衣の細い手首を何食わぬ顔で包み込んだ。大きな掌の温もりが、橈骨動脈の真上に重なる。',
-        bpm: 105,
+        text: 'チャコールの施術用ポロシャツを着た長身の男が、爽やかに笑ってスリッパを差し出してきた。高瀬航。右頬に浅いえくぼがあって、どこか人懐っこい雰囲気がある。',
+        bpm: 82
+      },
+      {
+        bg: 'assets/scene_1.png',
+        chara: 'yui',
+        speaker: '由衣',
+        text: '初めまして、小野寺です。……あの、ネットの『初回お得体験プラン』を見て伺ったんですけど……',
+        bpm: 84
+      },
+      {
+        bg: 'assets/scene_1.png',
+        chara: 'takase',
+        speaker: '高瀬',
+        text: 'はい、カウンセリングと軽いトレーニング体験、あと最後に身体の状態チェックですね。気楽にやりましょう',
+        bpm: 82
+      },
+      {
+        bg: 'assets/scene_1.png',
+        chara: 'takase',
+        speaker: '高瀬',
+        text: 'デスクワーク中心ですよね。首から肩にかけて結構凝ってるんじゃないですか？ うち、整体もセットでできますけど、今日はどうします？',
+        bpm: 85,
+        choices: [
+          { text: '「体を鍛えに来たので、トレーニング中心で！」と意地を張る', target: 'session1_choice_train' },
+          { text: '「実は肩こりもひどくて……両方見てほしいです」と素直に言う', target: 'session1_choice_both' }
+        ]
+      }
+    ],
+
+    session1_choice_train: [
+      {
+        bg: 'assets/scene_1.png',
+        chara: 'takase',
+        speaker: '高瀬',
+        text: 'お、やる気満々ですね。いいですよ、じゃあまずはガッツリ下半身から動かして、代謝上げていきましょうか',
+        bpm: 88,
+        nextScene: 'session1_training'
+      }
+    ],
+
+    session1_choice_both: [
+      {
+        bg: 'assets/scene_1.png',
+        chara: 'takase',
+        speaker: '高瀬',
+        text: '了解です。じゃあトレーニングでどこが使えてないか炙り出してから、最後にしっかり整えましょう',
+        bpm: 88,
+        nextScene: 'session1_training'
+      }
+    ],
+
+    session1_training: [
+      {
+        bg: 'assets/scene_1.png',
+        chara: 'yui',
+        speaker: '由衣',
+        text: 'くっ……！ はぁ……っ、足、もう上がらないです……！',
+        bpm: 110,
         effect: 'pulse'
       },
       {
         bg: 'assets/scene_1.png',
         chara: 'takase',
         speaker: '高瀬',
-        text: '脈……全然落ちないっすね。さっきのスクワットの負荷、もう抜けてるはずなのに',
-        bpm: 110
+        text: 'はい、ラスト3回！ 骨盤立てて、息吐きながら沈む！ ……そう、フォーム崩れてないですよ',
+        bpm: 115
       },
       {
         bg: 'assets/scene_1.png',
-        chara: 'yui',
-        speaker: '由衣',
-        text: '……い、息上がってるから……当たり前です。手、離してください……',
+        chara: null,
+        speaker: '',
+        text: 'タイマーのブザーが鳴り、由衣はその場へへたり込みそうになった。膝が小鹿のように細かく震えている。',
+        bpm: 120,
+        effect: 'pulse'
+      },
+      {
+        bg: 'assets/scene_1.png',
+        chara: 'takase',
+        speaker: '高瀬',
+        text: 'お疲れさまでした。はい、タオルと水。……ちょっと手、貸してもらえます？',
         bpm: 115
       },
       {
         bg: 'assets/scene_1.png',
         chara: 'takase',
-        speaker: '高瀬',
-        text: 'いや。心拍のリズムが違います。胸の奥、めちゃくちゃ速く跳ねてる',
-        bpm: 120,
-        effect: 'pulse'
-      },
-      {
-        bg: 'assets/takase_main.png',
-        chara: 'takase',
-        speaker: '高瀬',
-        text: '……今日はこれで店じまいだから。奥のベッド、行きましょうか',
-        bpm: 122,
-        choices: [
-          { text: '素直に奥のベッドへ向かう', target: 'scene_bed_obedient' },
-          { text: '「今日はもう帰ります」と抵抗する', target: 'scene_bed_resist' }
-        ]
-      }
-    ],
-
-    // 分岐A：素直に従う
-    scene_bed_obedient: [
-      {
-        bg: 'assets/scene_2.png',
-        chara: 'takase',
         speaker: '',
-        text: 'フロアの照明を半分落とし、入口の自動ドアを内側からガチャリと施錠する金属音が静かな店内に小さく響いた。',
-        bpm: 118,
-        effect: 'pulse'
-      },
-      {
-        bg: 'assets/scene_2.png',
-        chara: 'takase',
-        speaker: '高瀬',
-        text: 'いい子。素直なクライアントは嫌いじゃないですよ',
-        bpm: 122
-      },
-      {
-        bg: 'assets/scene_2.png',
-        chara: null,
-        speaker: '',
-        text: '施術台にうつ伏せになり、サロン貸出の薄いTシャツ越しに背中を預ける。高瀬の厚みのある両手が、肩甲骨から腰のくびれへと滑り落ちてきた。',
+        text: '冷たいペットボトルを渡されると同時に、高瀬の大きな掌が由衣の細い右手首を下から包み込んだ。親指の腹が橈骨動脈の真上にピタリと吸い付く。',
         bpm: 125,
-        nextScene: 'scene_massage_deep'
-      }
-    ],
-
-    // 分岐B：抵抗する
-    scene_bed_resist: [
-      {
-        bg: 'assets/scene_2.png',
-        chara: 'takase',
-        speaker: '由衣',
-        text: '今日はもうシャワー浴びて帰ります……！　整体は次回で……',
-        bpm: 120
+        effect: 'pulse'
       },
       {
-        bg: 'assets/scene_2.png',
-        chara: 'takase',
-        speaker: '高瀬',
-        text: 'ダメです。乳酸溜まったまま帰したらトレーナーの名折れなんで',
-        bpm: 125
-      },
-      {
-        bg: 'assets/scene_2.png',
-        chara: 'takase',
-        speaker: '',
-        text: 'ガチャリ、と無慈悲に施錠されたエントランス。高瀬は由衣の腰を両手で軽く抱き上げ、そのまま施術ベッドへと押し倒した。',
-        bpm: 130,
-        effect: 'flash',
-        nextScene: 'scene_massage_deep'
-      }
-    ],
-
-    // --- 施術ベッドでの密着アプローチ ---
-    scene_massage_deep: [
-      {
-        bg: 'assets/scene_2.png',
-        chara: 'takase',
-        speaker: '高瀬',
-        text: 'ここ、まだ力抜けてない。……息吐いて。力抜かないと奥まで指が入らない',
-        bpm: 125
-      },
-      {
-        bg: 'assets/scene_2.png',
+        bg: 'assets/scene_1.png',
         chara: 'yui',
         speaker: '由衣',
-        text: 'あっ……んっ……！　そこ、痛い……っ',
-        bpm: 128,
-        effect: 'pulse'
+        text: 'えっ……あの、高瀬さん……？',
+        bpm: 130
       },
       {
-        bg: 'assets/scene_2.png',
+        bg: 'assets/scene_1.png',
         chara: 'takase',
         speaker: '高瀬',
-        text: '痛いのは最初だけ。……ほら、Tシャツめくりますよ。素肌の熱、直で確かめたいんで',
-        bpm: 132
+        text: '心拍見てるだけですよ。スマートウォッチより俺の手のほうが早いんで',
+        bpm: 128
       },
       {
-        bg: 'assets/scene_3.png',
-        chara: null,
-        speaker: '',
-        text: '薄い生地が捲り上げられ、冷房の風のあと、高瀬の熱を帯びた指先が直接素肌に触れる。腰骨から内腿の付け根へ、迷いなく指が這う。',
+        bg: 'assets/scene_1.png',
+        chara: 'takase',
+        speaker: '高瀬',
+        text: '……それにしても、脈全然落ちないっすね。スクワットの負荷は抜けてるはずなのに、胸の奥、めちゃくちゃ速く跳ねてる',
         bpm: 135,
         effect: 'pulse'
       },
       {
-        bg: 'assets/scene_3.png',
+        bg: 'assets/scene_1.png',
+        chara: 'yui',
+        speaker: '由衣',
+        text: '息、上がってるから当たり前です……！ 手、離してください……っ',
+        bpm: 138
+      },
+      {
+        bg: 'assets/scene_1.png',
         chara: 'takase',
         speaker: '高瀬',
-        text: 'ハーフパンツのゴム、緩めますね。……筋肉の起始部を緩めるだけですから。',
-        bpm: 138,
+        text: 'はいはい。……でもこれ、首と背中の強張りも限界ですね。プランの特典で整体15分ついてるんで、奥のベッドで少し緩めますよ。どうします？',
+        bpm: 125,
         choices: [
-          { text: '「高瀬さん、そこはダメ……っ」とすがる', target: 'scene_climax_a' },
-          { text: '声が出ないままシーツを強く握りしめる', target: 'scene_climax_b' }
+          { text: '「……お願いします」と悔しそうにベッドへ向かう', target: 'session1_bed' },
+          { text: '「今日はもう帰ります」と意地で断る', target: 'session1_decline' }
         ]
       }
     ],
 
-    // クライマックスA
-    scene_climax_a: [
+    session1_bed: [
       {
-        bg: 'assets/scene_3.png',
+        bg: 'assets/scene_2.png',
         chara: 'takase',
         speaker: '高瀬',
-        text: 'ダメ？　どこがダメなんですか？　こんなに身体、熱くして欲しがってるのに',
-        bpm: 142,
-        effect: 'pulse'
+        text: 'うつ伏せで力抜いてくださいね。……ほら、肩甲骨周りガッチガチ。これじゃ呼吸浅くなるのも当然です',
+        bpm: 118
       },
       {
-        bg: 'assets/scene_3.png',
-        chara: 'takase',
-        speaker: '高瀬',
-        text: '……ゆいぴー。力抜いて。全部こっちで支えてやるから',
-        bpm: 145,
-        effect: 'flash',
-        nextScene: 'scene_ending'
-      }
-    ],
-
-    // クライマックスB
-    scene_climax_b: [
-      {
-        bg: 'assets/scene_3.png',
-        chara: 'takase',
-        speaker: '高瀬',
-        text: 'シーツ握らないの。爪割れちゃうでしょ。……ほら、俺の手を握って',
-        bpm: 142,
-        effect: 'pulse'
-      },
-      {
-        bg: 'assets/scene_3.png',
-        chara: 'takase',
-        speaker: '高瀬',
-        text: 'ゆいぴー。……もう誤魔化せないよ。一番奥まで、全部教えて',
-        bpm: 145,
-        effect: 'flash',
-        nextScene: 'scene_ending'
-      }
-    ],
-
-    // --- エンディング ---
-    scene_ending: [
-      {
-        bg: 'assets/scene_3.png',
+        bg: 'assets/scene_2.png',
         chara: null,
         speaker: '',
-        text: '耳元に落ちてきた低音の吐息と、最深部を満たす圧倒的な質量。逃げ場のない施術ベッドの上で、由衣は男の腕の中にすべてを委ねた。',
-        bpm: 150,
-        effect: 'pulse'
+        text: 'Tシャツ越しに、高瀬の温かく力強い掌が肩甲骨のキワと背骨のラインを的確に圧迫していく。痛気持ちいい刺激が背筋を走り、思わず吐息が漏れた。',
+        bpm: 115
       },
       {
-        bg: 'assets/scene_3.png',
+        bg: 'assets/scene_2.png',
         chara: 'takase',
         speaker: '高瀬',
-        text: '……よく頑張りました。今日の特別メニュー、これで終了です。……由衣さん',
-        bpm: 110
+        text: '……はい、初回体験はここまで。お疲れさまでした！',
+        bpm: 95,
+        nextScene: 'session1_checkout'
+      }
+    ],
+
+    session1_decline: [
+      {
+        bg: 'assets/scene_1.png',
+        chara: 'takase',
+        speaker: '高瀬',
+        text: 'あはは、無理はさせませんよ。初日だし、今日はここまでにしておきましょうか',
+        bpm: 100,
+        nextScene: 'session1_checkout'
+      }
+    ],
+
+    session1_checkout: [
+      {
+        bg: 'assets/takase_main.png',
+        chara: 'takase',
+        speaker: '高瀬',
+        text: 'うちは月額とかコースの縛りやってないんで。都度払い制だから、また身体がキツくなったり動かしたくなったら、LINEで気軽に声かけてくださいね',
+        bpm: 85
       },
       {
         bg: 'assets/takase_main.png',
         chara: 'takase',
+        speaker: '高瀬',
+        text: '小野寺さん、次回はもっと身体の力抜けるようになりますよ。……お疲れさまでした！',
+        bpm: 82
+      },
+      {
+        bg: 'assets/takase_main.png',
+        chara: null,
         speaker: '',
-        text: '【特別セッション 終了】
-画面をタップするとタイトル画面に戻ります。',
-        bpm: 82,
+        text: '【Session 1 終了】\nあんなに触られたのに、引き止められることもなく爽やかに帰された。\n右の手首に、まだあの人の体温が残っている。',
+        bpm: 80,
         isEnd: true
       }
     ]
+  },
+
+  // ===== 高瀬のカルテ裏メモ（隠し要素） =====
+  secretNotes: {
+    session1: {
+      title: '高瀬の電子カルテ［非公開メモ］- Session 1',
+      publicSummary: '小野寺由衣様（29）/ 初回お得体験プラン\n・肩甲骨挙上、右股関節可動域に軽度の制限あり\n・「トレーニング重視」希望。次回姿勢改善アプローチ推奨',
+      secretThought: '『鍛えに来た』って意地張ってて可愛い。デスクワークの凝りもあるけど、手首取った瞬間心拍130超えてて笑った。警戒心強い割に、触られたところから熱持って息乱れるタイプ。身体は完全に委ねたがってるのにプライドが邪魔してる。次回はもう少し追い込んで、整体の方に誘導してみるか。'
+    }
   }
 };
