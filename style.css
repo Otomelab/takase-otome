@@ -256,7 +256,7 @@ html, body {
   position: absolute;
   left: 12px;
   right: 12px;
-  bottom: calc(env(safe-area-inset-bottom, 24px) + 36px);
+  bottom: calc(env(safe-area-inset-bottom, 32px) + 56px);
   z-index: 10;
   min-height: 155px;
   background: var(--bg-box);
@@ -449,7 +449,7 @@ html, body {
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding: 40px 24px calc(env(safe-area-inset-bottom, 20px) + 40px);
+  padding: 40px 24px calc(env(safe-area-inset-bottom, 32px) + 64px);
   transition: opacity 0.8s ease;
 }
 
