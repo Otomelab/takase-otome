@@ -1,287 +1,321 @@
-// ===== ゲーム本体進行スクリプト =====
+// ===== ゲーム進行エンジン (game.js) =====
 class NovelGame {
   constructor() {
     this.currentSceneId = null;
-    this.currentSceneIndex = 0;
+    this.currentStep = 0;
+    this.isAuto = false;
+    this.autoTimer = null;
     this.isTyping = false;
     this.typeInterval = null;
-    this.autoPlay = false;
-    this.autoPlayTimer = null;
     this.backlog = [];
-    this.currentBpm = 80;
 
-    // DOM要素
-    this.elBgImage = document.getElementById('bg-image');
-    this.elSpeakerBadge = document.getElementById('speaker-badge');
-    this.elSpeakerName = document.getElementById('speaker-name');
-    this.elDialogueText = document.getElementById('dialogue-text');
-    this.elDialogueBox = document.getElementById('dialogue-box');
-    this.elNextCursor = document.getElementById('next-cursor');
-    this.elChoicesOverlay = document.getElementById('choices-overlay');
-    this.elChoicesList = document.getElementById('choices-list');
-    this.elLogOverlay = document.getElementById('log-overlay');
-    this.elLogList = document.getElementById('log-list');
-    this.elTitleScreen = document.getElementById('title-screen');
-    this.elGalleryOverlay = document.getElementById('gallery-overlay');
-    this.elSecretOverlay = document.getElementById('secret-overlay');
-    this.elHeartPulse = document.getElementById('heartbeat-pulse');
-    this.elScreenFlash = document.getElementById('screen-flash');
-    this.elBpmValue = document.getElementById('bpm-value');
-    this.elSpriteTakase = document.getElementById('sprite-takase');
-    this.elSpriteYui = document.getElementById('sprite-yui');
-    this.btnSound = document.getElementById('btn-sound');
-    this.btnAuto = document.getElementById('btn-auto');
-    this.btnLog = document.getElementById('btn-log');
-    this.btnSecret = document.getElementById('btn-secret');
+    // DOM参照
+    this.dom = {
+      container: document.getElementById('game-container'),
+      bgImage: document.getElementById('bg-image'),
+      heartbeat: document.getElementById('heartbeat-pulse'),
+      screenFlash: document.getElementById('screen-flash'),
+      spriteTakase: document.getElementById('sprite-takase'),
+      spriteYui: document.getElementById('sprite-yui'),
+      speakerBadge: document.getElementById('speaker-badge'),
+      speakerName: document.getElementById('speaker-name'),
+      dialogueBox: document.getElementById('dialogue-box'),
+      dialogueText: document.getElementById('dialogue-text'),
+      nextCursor: document.getElementById('next-cursor'),
+      bpmValue: document.getElementById('bpm-value'),
+      choicesOverlay: document.getElementById('choices-overlay'),
+      choicesList: document.getElementById('choices-list'),
+      logOverlay: document.getElementById('log-overlay'),
+      logList: document.getElementById('log-list'),
+      chartOverlay: document.getElementById('chart-overlay'),
+      chartClient: document.getElementById('chart-client'),
+      chartPlan: document.getElementById('chart-plan'),
+      chartOfficial: document.getElementById('chart-official'),
+      chartSecret: document.getElementById('chart-secret'),
+      galleryOverlay: document.getElementById('gallery-overlay'),
+      titleScreen: document.getElementById('title-screen'),
+      btnSound: document.getElementById('btn-sound'),
+      btnAuto: document.getElementById('btn-auto'),
+      btnLog: document.getElementById('btn-log'),
+      btnChart: document.getElementById('btn-chart'),
+      btnStart: document.getElementById('btn-start'),
+      btnTitleChart: document.getElementById('btn-title-chart'),
+      btnGallery: document.getElementById('btn-gallery'),
+      btnCloseLog: document.getElementById('btn-close-log'),
+      btnCloseChart: document.getElementById('btn-close-chart'),
+      btnCloseGallery: document.getElementById('btn-close-gallery')
+    };
 
-    this.initEventListeners();
+    this.initEvents();
+    this.initChartData();
   }
 
-  initEventListeners() {
+  initChartData() {
+    const notes = window.SCENARIO_DATA.chartNotes;
+    if (!notes) return;
+    this.dom.chartClient.textContent = notes.client;
+    this.dom.chartPlan.textContent = notes.plan;
+    this.dom.chartOfficial.textContent = notes.officialNote;
+    this.dom.chartSecret.textContent = notes.secretNote;
+  }
+
+  initEvents() {
+    // クリック/タップでテキスト送り
+    this.dom.dialogueBox.addEventListener('click', (e) => {
+      e.stopPropagation();
+      this.handleAdvance();
+    });
+
+    // サウンド切替
+    this.dom.btnSound.addEventListener('click', () => {
+      const enabled = window.sound.toggleSound();
+      this.dom.btnSound.textContent = enabled ? '🔊 BGM' : '🔇 BGM';
+      this.dom.btnSound.classList.toggle('active', enabled);
+    });
+
+    // オートモード
+    this.dom.btnAuto.addEventListener('click', () => {
+      this.isAuto = !this.isAuto;
+      this.dom.btnAuto.classList.toggle('active', this.isAuto);
+      if (this.isAuto && !this.isTyping) {
+        this.scheduleAutoNext();
+      } else if (!this.isAuto && this.autoTimer) {
+        clearTimeout(this.autoTimer);
+      }
+    });
+
+    // バックログ
+    this.dom.btnLog.addEventListener('click', () => this.showLog());
+    this.dom.btnCloseLog.addEventListener('click', () => this.dom.logOverlay.classList.add('hidden'));
+
+    // カルテ
+    this.dom.btnChart.addEventListener('click', () => this.showChart());
+    this.dom.btnTitleChart.addEventListener('click', () => this.showChart());
+    this.dom.btnCloseChart.addEventListener('click', () => this.dom.chartOverlay.classList.add('hidden'));
+
+    // ギャラリー
+    this.dom.btnGallery.addEventListener('click', () => this.dom.galleryOverlay.classList.remove('hidden'));
+    this.dom.btnCloseGallery.addEventListener('click', () => this.dom.galleryOverlay.classList.add('hidden'));
+
     // スタートボタン
-    document.getElementById('btn-start').addEventListener('click', () => {
+    this.dom.btnStart.addEventListener('click', () => {
       window.sound.init();
-      this.elTitleScreen.style.opacity = '0';
+      this.dom.titleScreen.style.opacity = '0';
       setTimeout(() => {
-        this.elTitleScreen.classList.add('hidden');
-        this.startScene(window.SCENARIO_DATA.startScene);
+        this.dom.titleScreen.classList.add('hidden');
+        this.start(window.SCENARIO_DATA.startScene);
       }, 800);
     });
 
-    // 画面タップでメッセージ送り
-    this.elDialogueBox.addEventListener('click', () => this.handleAdvance());
-
-    // サウンド切り替え
-    this.btnSound.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const isEnabled = window.sound.toggleSound();
-      this.btnSound.textContent = isEnabled ? '🔊 BGM' : '🔇 BGM';
-      this.btnSound.classList.toggle('active', isEnabled);
-    });
-
-    // オートモード切り替え
-    this.btnAuto.addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.autoPlay = !this.autoPlay;
-      this.btnAuto.classList.toggle('active', this.autoPlay);
-      if (this.autoPlay && !this.isTyping) {
-        this.handleAdvance();
-      }
-    });
-
-    // ログ表示
-    this.btnLog.addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.showBacklog();
-    });
-    document.getElementById('btn-close-log').addEventListener('click', () => {
-      this.elLogOverlay.classList.add('hidden');
-    });
-
-    // ギャラリー表示
-    document.getElementById('btn-gallery').addEventListener('click', () => {
-      this.elGalleryOverlay.classList.remove('hidden');
-    });
-    document.getElementById('btn-close-gallery').addEventListener('click', () => {
-      this.elGalleryOverlay.classList.add('hidden');
-    });
-
-    // 裏カルテ表示
-    this.btnSecret.addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.showSecretKarte();
-    });
-    document.getElementById('btn-close-secret').addEventListener('click', () => {
-      this.elSecretOverlay.classList.add('hidden');
-    });
-
-    // 心拍パルスコールバック
+    // 鼓動サウンドとUIパルスの連動
     window.onHeartbeatTrigger = () => {
-      this.elHeartPulse.classList.remove('beating');
-      void this.elHeartPulse.offsetWidth; // リフロー発生
-      this.elHeartPulse.classList.add('beating');
+      this.dom.heartbeat.classList.remove('beating');
+      void this.dom.heartbeat.offsetWidth; // リフロー
+      this.dom.heartbeat.classList.add('beating');
     };
   }
 
-  startScene(sceneId) {
+  start(sceneId) {
     this.currentSceneId = sceneId;
-    this.currentSceneIndex = 0;
+    this.currentStep = 0;
+    this.backlog = [];
     this.renderCurrentStep();
   }
 
-  renderCurrentStep() {
-    const scene = window.SCENARIO_DATA.scenes[this.currentSceneId];
-    if (!scene || this.currentSceneIndex >= scene.length) return;
-
-    const step = scene[this.currentSceneIndex];
-
-    // 心拍数の更新
-    if (step.bpm) {
-      this.currentBpm = step.bpm;
-      this.elBpmValue.textContent = step.bpm;
-      window.sound.setBpm(step.bpm);
-    }
-
-    // 背景の更新
-    if (step.bg) {
-      this.elBgImage.style.backgroundImage = `url('${step.bg}')`;
-    }
-
-    // 立ち絵の更新
-    this.updateSprites(step.chara);
-
-    // エフェクト
-    if (step.effect === 'pulse') {
-      window.onHeartbeatTrigger();
-    } else if (step.effect === 'flash') {
-      this.elScreenFlash.style.opacity = '0.8';
-      setTimeout(() => { this.elScreenFlash.style.opacity = '0'; }, 300);
-    }
-
-    // 話者名バッジ
-    if (step.speaker) {
-      this.elSpeakerBadge.className = '';
-      if (step.speaker === '由衣') this.elSpeakerBadge.classList.add('yui');
-      this.elSpeakerName.textContent = step.speaker;
-    } else {
-      this.elSpeakerBadge.className = 'monologue';
-      this.elSpeakerName.textContent = '';
-    }
-
-    // バックログに追加
-    this.backlog.push({ speaker: step.speaker, text: step.text });
-
-    // 文字送りタイピング表示
-    this.typeText(step.text, () => {
-      // 終了時コールバック
-      if (step.choices && step.choices.length > 0) {
-        this.showChoices(step.choices);
-      } else if (this.autoPlay) {
-        const readWait = Math.max(1500, step.text.length * 60);
-        this.autoPlayTimer = setTimeout(() => this.handleAdvance(), readWait);
-      }
-    });
-  }
-
-  typeText(fullText, onComplete) {
-    this.isTyping = true;
-    this.elNextCursor.style.display = 'none';
-    this.elDialogueText.innerHTML = '';
-    clearInterval(this.typeInterval);
-
-    let index = 0;
-    this.typeInterval = setInterval(() => {
-      if (index < fullText.length) {
-        this.elDialogueText.textContent = fullText.slice(0, index + 1);
-        index++;
-      } else {
-        this.finishTyping(fullText, onComplete);
-      }
-    }, 28);
-  }
-
-  finishTyping(fullText, onComplete) {
-    clearInterval(this.typeInterval);
-    this.elDialogueText.textContent = fullText;
-    this.isTyping = false;
-    this.elNextCursor.style.display = 'block';
-    if (onComplete) onComplete();
-  }
-
   handleAdvance() {
+    window.sound.playTap();
+    if (this.isTyping) {
+      // タイプライター中なら全文即時表示
+      this.finishTyping();
+      return;
+    }
+
     const scene = window.SCENARIO_DATA.scenes[this.currentSceneId];
     if (!scene) return;
-    const step = scene[this.currentSceneIndex];
 
-    if (this.isTyping) {
-      // タイピングスキップ
-      this.finishTyping(step.text, () => {
-        if (step.choices && step.choices.length > 0) {
-          this.showChoices(step.choices);
-        }
-      });
+    const currentData = scene[this.currentStep];
+    if (currentData && currentData.choices && currentData.choices.length > 0) {
+      // 選択肢待ち
       return;
     }
 
-    // 選択肢表示中はタップ無効
-    if (step.choices && step.choices.length > 0) {
+    if (currentData && currentData.isEnd) {
+      // タイトルへ戻る
+      this.dom.titleScreen.classList.remove('hidden');
+      this.dom.titleScreen.style.opacity = '1';
       return;
     }
 
-    // エンディング時
-    if (step.isEnd) {
-      location.reload();
+    if (currentData && currentData.nextScene) {
+      this.currentSceneId = currentData.nextScene;
+      this.currentStep = 0;
+      this.renderCurrentStep();
       return;
     }
 
-    window.sound.playTap();
-
-    // 次のステップまたは次のシーン
-    if (step.nextScene) {
-      this.startScene(step.nextScene);
-    } else if (this.currentSceneIndex + 1 < scene.length) {
-      this.currentSceneIndex++;
+    if (this.currentStep + 1 < scene.length) {
+      this.currentStep++;
       this.renderCurrentStep();
     }
   }
 
+  renderCurrentStep() {
+    const scene = window.SCENARIO_DATA.scenes[this.currentSceneId];
+    if (!scene) return;
+    const data = scene[this.currentStep];
+    if (!data) return;
+
+    // 背景更新
+    if (data.bg) {
+      this.dom.bgImage.style.backgroundImage = `url('${data.bg}')`;
+    }
+
+    // 立ち絵更新
+    this.updateSprites(data.chara);
+
+    // 話者バッジ
+    this.updateSpeaker(data.speaker);
+
+    // BPM更新
+    if (data.bpm) {
+      this.dom.bpmValue.textContent = data.bpm;
+      window.sound.setBpm(data.bpm);
+    }
+
+    // 演出エフェクト
+    if (data.effect === 'pulse') {
+      this.dom.heartbeat.classList.remove('beating');
+      void this.dom.heartbeat.offsetWidth;
+      this.dom.heartbeat.classList.add('beating');
+    } else if (data.effect === 'flash') {
+      this.dom.screenFlash.style.opacity = '0.7';
+      setTimeout(() => { this.dom.screenFlash.style.opacity = '0'; }, 300);
+    }
+
+    // テキストタイプライター
+    this.startTyping(data.text, () => {
+      // 選択肢があるか確認
+      if (data.choices && data.choices.length > 0) {
+        this.showChoices(data.choices);
+      } else if (this.isAuto) {
+        this.scheduleAutoNext();
+      }
+    });
+
+    // バックログ記録
+    this.backlog.push({
+      speaker: data.speaker,
+      text: data.text
+    });
+  }
+
+  updateSprites(chara) {
+    this.dom.spriteTakase.classList.remove('active', 'dimmed');
+    this.dom.spriteYui.classList.remove('active', 'dimmed');
+
+    if (chara === 'takase') {
+      this.dom.spriteTakase.classList.add('active');
+    } else if (chara === 'yui') {
+      this.dom.spriteYui.classList.add('active');
+    } else if (chara === 'both') {
+      this.dom.spriteTakase.classList.add('active');
+      this.dom.spriteYui.classList.add('active');
+    }
+  }
+
+  updateSpeaker(speaker) {
+    this.dom.speakerBadge.className = '';
+    if (!speaker) {
+      this.dom.speakerBadge.classList.add('monologue');
+      this.dom.speakerName.textContent = '';
+    } else {
+      this.dom.speakerName.textContent = speaker;
+      if (speaker === '由衣') {
+        this.dom.speakerBadge.classList.add('yui');
+      }
+    }
+  }
+
+  startTyping(fullText, onComplete) {
+    if (this.typeInterval) clearInterval(this.typeInterval);
+    this.isTyping = true;
+    this.dom.nextCursor.style.display = 'none';
+    this.dom.dialogueText.textContent = '';
+    this.fullTextToType = fullText;
+    this.onTypeComplete = onComplete;
+
+    let idx = 0;
+    this.typeInterval = setInterval(() => {
+      if (idx < fullText.length) {
+        this.dom.dialogueText.textContent += fullText.charAt(idx);
+        idx++;
+      } else {
+        this.finishTyping();
+      }
+    }, 28);
+  }
+
+  finishTyping() {
+    if (this.typeInterval) clearInterval(this.typeInterval);
+    this.isTyping = false;
+    this.dom.dialogueText.textContent = this.fullTextToType || '';
+    this.dom.nextCursor.style.display = 'block';
+    if (this.onTypeComplete) {
+      const cb = this.onTypeComplete;
+      this.onTypeComplete = null;
+      cb();
+    }
+  }
+
   showChoices(choices) {
-    this.elChoicesList.innerHTML = '';
-    choices.forEach((c) => {
+    this.dom.choicesList.innerHTML = '';
+    choices.forEach(c => {
       const btn = document.createElement('button');
       btn.className = 'choice-btn';
       btn.textContent = c.text;
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         window.sound.playTap();
-        this.elChoicesOverlay.classList.add('hidden');
-        this.startScene(c.target);
+        this.dom.choicesOverlay.classList.add('hidden');
+        this.currentSceneId = c.target;
+        this.currentStep = 0;
+        this.renderCurrentStep();
       });
-      this.elChoicesList.appendChild(btn);
+      this.dom.choicesList.appendChild(btn);
     });
-    this.elChoicesOverlay.classList.remove('hidden');
+    this.dom.choicesOverlay.classList.remove('hidden');
   }
 
-  updateSprites(chara) {
-    this.elSpriteTakase.classList.remove('active', 'dimmed');
-    this.elSpriteYui.classList.remove('active', 'dimmed');
-
-    if (chara === 'takase') {
-      this.elSpriteTakase.classList.add('active');
-    } else if (chara === 'yui') {
-      this.elSpriteYui.classList.add('active');
-    } else if (chara === 'both') {
-      this.elSpriteTakase.classList.add('active');
-      this.elSpriteYui.classList.add('dimmed');
-    }
+  scheduleAutoNext() {
+    if (this.autoTimer) clearTimeout(this.autoTimer);
+    this.autoTimer = setTimeout(() => {
+      if (this.isAuto) this.handleAdvance();
+    }, 2600);
   }
 
-  showBacklog() {
-    this.elLogList.innerHTML = '';
-    this.backlog.forEach((item) => {
-      const div = document.createElement('div');
-      div.className = 'log-entry';
+  showLog() {
+    this.dom.logList.innerHTML = '';
+    this.backlog.forEach(item => {
+      const entry = document.createElement('div');
+      entry.className = 'log-entry';
       if (item.speaker) {
         const sp = document.createElement('div');
-        sp.className = `log-speaker ${item.speaker === '由衣' ? 'yui' : ''}`;
+        sp.className = 'log-speaker ' + (item.speaker === '由衣' ? 'yui' : '');
         sp.textContent = item.speaker;
-        div.appendChild(sp);
+        entry.appendChild(sp);
       }
-      const text = document.createElement('div');
-      text.className = 'log-text';
-      text.textContent = item.text;
-      div.appendChild(text);
-      this.elLogList.appendChild(div);
+      const p = document.createElement('div');
+      p.className = 'log-text';
+      p.textContent = item.text;
+      entry.appendChild(p);
+      this.dom.logList.appendChild(entry);
     });
-    this.elLogOverlay.classList.remove('hidden');
-    this.elLogList.scrollTop = this.elLogList.scrollHeight;
+    this.dom.logOverlay.classList.remove('hidden');
+    this.dom.logList.scrollTop = this.dom.logList.scrollHeight;
   }
 
-  showSecretKarte() {
-    const data = window.SCENARIO_DATA.secretNotes.session1;
-    document.getElementById('secret-public-text').textContent = data.publicNote;
-    document.getElementById('secret-private-text').textContent = data.privateNote;
-    this.elSecretOverlay.classList.remove('hidden');
+  showChart() {
+    this.dom.chartOverlay.classList.remove('hidden');
   }
 }
 
