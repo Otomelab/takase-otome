@@ -1,329 +1,309 @@
-// ===== ゲーム進行エンジン =====
-class NovelEngine {
+// ===== ゲーム本体ロジック & 裏カルテ管理 =====
+
+class GameEngine {
   constructor() {
+    this.scenario = window.SCENARIO_DATA;
     this.currentSceneId = null;
-    this.stepIndex = 0;
+    this.currentIndex = 0;
+    this.isTyping = false;
+    this.typeTimer = null;
+    this.currentText = '';
+    this.backlog = [];
     this.isAuto = false;
     this.autoTimer = null;
-    this.isTyping = false;
-    this.currentFullText = '';
-    this.typingTimer = null;
-    this.backlog = [];
 
-    // DOM要素
-    this.dom = {
-      bgImage: document.getElementById('bg-image'),
-      spriteTakase: document.getElementById('sprite-takase'),
-      spriteYui: document.getElementById('sprite-yui'),
-      speakerBadge: document.getElementById('speaker-badge'),
-      speakerName: document.getElementById('speaker-name'),
-      dialogueText: document.getElementById('dialogue-text'),
-      dialogueBox: document.getElementById('dialogue-box'),
-      bpmValue: document.getElementById('bpm-value'),
-      heartbeatPulse: document.getElementById('heartbeat-pulse'),
-      screenFlash: document.getElementById('screen-flash'),
-      choicesOverlay: document.getElementById('choices-overlay'),
-      choicesList: document.getElementById('choices-list'),
-      titleScreen: document.getElementById('title-screen'),
-      btnStart: document.getElementById('btn-start'),
-      btnSound: document.getElementById('btn-sound'),
-      btnAuto: document.getElementById('btn-auto'),
-      btnLog: document.getElementById('btn-log'),
-      btnCloseLog: document.getElementById('btn-close-log'),
-      logOverlay: document.getElementById('log-overlay'),
-      logList: document.getElementById('log-list'),
-      galleryOverlay: document.getElementById('gallery-overlay'),
-      btnGallery: document.getElementById('btn-gallery'),
-      btnCloseGallery: document.getElementById('btn-close-gallery'),
-      heartRateMeter: document.getElementById('heart-rate-meter'),
-      secretModal: document.getElementById('secret-modal'),
-      secretContent: document.getElementById('secret-content'),
-      btnCloseSecret: document.getElementById('btn-close-secret')
-    };
+    // DOM
+    this.container = document.getElementById('game-container');
+    this.bgImage = document.getElementById('bg-image');
+    this.spriteTakase = document.getElementById('sprite-takase');
+    this.spriteYui = document.getElementById('sprite-yui');
+    this.dialogueBox = document.getElementById('dialogue-box');
+    this.speakerBadge = document.getElementById('speaker-badge');
+    this.speakerName = document.getElementById('speaker-name');
+    this.dialogueText = document.getElementById('dialogue-text');
+    this.bpmValue = document.getElementById('bpm-value');
+    this.pulseLayer = document.getElementById('heartbeat-pulse');
+    this.flashLayer = document.getElementById('screen-flash');
+    this.choicesOverlay = document.getElementById('choices-overlay');
+    this.choicesList = document.getElementById('choices-list');
+    this.logOverlay = document.getElementById('log-overlay');
+    this.logList = document.getElementById('log-list');
+    this.titleScreen = document.getElementById('title-screen');
+    this.galleryOverlay = document.getElementById('gallery-overlay');
+    this.secretKarteModal = document.getElementById('secret-karte-modal');
 
     this.initEvents();
   }
 
   initEvents() {
-    // スタートボタン
-    this.dom.btnStart.addEventListener('click', (e) => {
-      e.stopPropagation();
+    // タイトルボタン
+    document.getElementById('btn-start').addEventListener('click', () => {
       window.sound.init();
-      this.startStory();
+      this.startNewGame();
     });
 
-    // メッセージ送り
-    this.dom.dialogueBox.addEventListener('click', () => {
-      this.handleAdvance();
+    document.getElementById('btn-gallery').addEventListener('click', () => {
+      this.galleryOverlay.classList.remove('hidden');
     });
 
-    // サウンド切替
-    this.dom.btnSound.addEventListener('click', (e) => {
-      e.stopPropagation();
+    document.getElementById('btn-close-gallery').addEventListener('click', () => {
+      this.galleryOverlay.classList.add('hidden');
+    });
+
+    // 裏カルテ（タイトル画面の「裏カルテ」ボタン or ゲーム中BPMタップ）
+    const btnKarte = document.getElementById('btn-secret-karte');
+    if (btnKarte) {
+      btnKarte.addEventListener('click', () => this.openSecretKarte());
+    }
+    document.getElementById('heart-rate-meter').addEventListener('click', () => {
+      this.openSecretKarte();
+    });
+    document.getElementById('btn-close-karte').addEventListener('click', () => {
+      this.secretKarteModal.classList.add('hidden');
+    });
+
+    // 操作バー
+    const btnSound = document.getElementById('btn-sound');
+    btnSound.addEventListener('click', () => {
       const enabled = window.sound.toggleSound();
-      this.dom.btnSound.classList.toggle('active', enabled);
-      this.dom.btnSound.textContent = enabled ? '🔊 BGM ON' : '🔇 BGM';
+      btnSound.classList.toggle('active', enabled);
+      btnSound.innerText = enabled ? '🔊 BGM' : '🔇 BGM';
     });
 
-    // オート切替
-    this.dom.btnAuto.addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.toggleAuto();
-    });
-
-    // バックログ開閉
-    this.dom.btnLog.addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.openLog();
-    });
-    this.dom.btnCloseLog.addEventListener('click', () => {
-      this.dom.logOverlay.classList.add('hidden');
-    });
-
-    // スチルギャラリー開閉
-    this.dom.btnGallery.addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.dom.galleryOverlay.classList.remove('hidden');
-    });
-    this.dom.btnCloseGallery.addEventListener('click', () => {
-      this.dom.galleryOverlay.classList.add('hidden');
-    });
-
-    // BPMメータータップ（裏カルテの隠しトリガー）
-    this.dom.heartRateMeter.addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.openSecretNote('session1');
-    });
-
-    // 鼓動エフェクト連動
-    window.onHeartbeatTrigger = () => {
-      this.dom.heartbeatPulse.classList.remove('beating');
-      void this.dom.heartbeatPulse.offsetWidth;
-      this.dom.heartbeatPulse.classList.add('beating');
-    };
-  }
-
-  startStory() {
-    this.dom.titleScreen.style.opacity = '0';
-    setTimeout(() => {
-      this.dom.titleScreen.classList.add('hidden');
-    }, 800);
-
-    this.currentSceneId = window.SCENARIO_DATA.startScene;
-    this.stepIndex = 0;
-    this.renderCurrentStep();
-  }
-
-  renderCurrentStep() {
-    const scene = window.SCENARIO_DATA.scenes[this.currentSceneId];
-    if (!scene || this.stepIndex >= scene.length) {
-      this.returnToTitle();
-      return;
-    }
-
-    const step = scene[this.stepIndex];
-
-    // 背景更新
-    if (step.bg) {
-      this.dom.bgImage.style.backgroundImage = `url('${step.bg}')`;
-    }
-
-    // 立ち絵更新
-    this.updateSprites(step.chara, step.speaker);
-
-    // BPM & 鼓動エンジン更新
-    if (step.bpm) {
-      this.dom.bpmValue.textContent = step.bpm;
-      window.sound.setBpm(step.bpm);
-    }
-
-    // 演出（フラッシュ・パルス）
-    if (step.effect === 'flash') {
-      this.flashScreen();
-    } else if (step.effect === 'pulse') {
-      this.triggerPulse();
-    }
-
-    // 話者バッジ
-    if (!step.speaker) {
-      this.dom.speakerBadge.className = 'monologue';
-      this.dom.speakerName.textContent = '';
-    } else {
-      this.dom.speakerBadge.className = step.speaker === '由衣' ? 'yui' : 'takase';
-      this.dom.speakerName.textContent = step.speaker;
-    }
-
-    // テキストタイプライター
-    this.typeText(step.text, () => {
-      // 選択肢がある場合
-      if (step.choices && step.choices.length > 0) {
-        this.showChoices(step.choices);
-      } else if (step.isEnd) {
-        // エンド
-      } else if (this.isAuto) {
+    const btnAuto = document.getElementById('btn-auto');
+    btnAuto.addEventListener('click', () => {
+      this.isAuto = !this.isAuto;
+      btnAuto.classList.toggle('active', this.isAuto);
+      if (this.isAuto && !this.isTyping) {
         this.scheduleAutoNext();
       }
     });
 
+    document.getElementById('btn-log').addEventListener('click', () => {
+      this.openLog();
+    });
+    document.getElementById('btn-close-log').addEventListener('click', () => {
+      this.logOverlay.classList.add('hidden');
+    });
+
+    // メッセージ枠タップで次へ
+    this.dialogueBox.addEventListener('click', () => {
+      window.sound.playTap();
+      this.onAdvance();
+    });
+
+    // 心拍同期パルスエフェクト
+    window.onHeartbeatTrigger = () => {
+      this.triggerPulse();
+    };
+  }
+
+  openSecretKarte() {
+    this.secretKarteModal.classList.remove('hidden');
+  }
+
+  triggerPulse() {
+    this.pulseLayer.classList.remove('beating');
+    void this.pulseLayer.offsetWidth;
+    this.pulseLayer.classList.add('beating');
+  }
+
+  triggerFlash() {
+    this.flashLayer.style.opacity = '0.7';
+    setTimeout(() => {
+      this.flashLayer.style.opacity = '0';
+    }, 250);
+  }
+
+  startNewGame() {
+    this.titleScreen.style.opacity = '0';
+    setTimeout(() => {
+      this.titleScreen.classList.add('hidden');
+    }, 800);
+
+    this.backlog = [];
+    this.loadScene(this.scenario.startScene, 0);
+  }
+
+  loadScene(sceneId, index = 0) {
+    this.currentSceneId = sceneId;
+    this.currentIndex = index;
+    const scene = this.scenario.scenes[sceneId];
+    if (!scene || !scene[index]) return;
+
+    this.renderStep(scene[index]);
+  }
+
+  renderStep(step) {
+    // 背景更新
+    if (step.bg) {
+      this.bgImage.style.backgroundImage = `url('${step.bg}')`;
+      this.bgImage.classList.add('zooming');
+    }
+
+    // BPM更新
+    if (step.bpm) {
+      this.bpmValue.innerText = step.bpm;
+      window.sound.setBpm(step.bpm);
+    }
+
+    // 演出
+    if (step.effect === 'pulse') {
+      this.triggerPulse();
+    } else if (step.effect === 'flash') {
+      this.triggerFlash();
+    }
+
+    // 立ち絵
+    this.updateSprites(step.chara, step.speaker);
+
+    // 話者バッジ
+    this.speakerBadge.className = '';
+    if (!step.speaker) {
+      this.speakerBadge.classList.add('monologue');
+      this.speakerName.innerText = '';
+    } else {
+      this.speakerName.innerText = step.speaker;
+      if (step.speaker === '由衣') {
+        this.speakerBadge.classList.add('yui');
+      }
+    }
+
     // バックログ記録
     this.backlog.push({
-      speaker: step.speaker,
+      speaker: step.speaker || '地の文',
       text: step.text
+    });
+
+    // タイピング表示
+    this.typewrite(step.text, () => {
+      if (step.choices && step.choices.length > 0) {
+        this.showChoices(step.choices);
+      } else if (this.isAuto) {
+        this.scheduleAutoNext();
+      }
     });
   }
 
   updateSprites(chara, speaker) {
-    this.dom.spriteTakase.classList.remove('active', 'dimmed', 'talking');
-    this.dom.spriteYui.classList.remove('active', 'dimmed', 'talking');
-
-    if (!chara) return;
+    this.spriteTakase.className = 'sprite';
+    this.spriteYui.className = 'sprite';
 
     if (chara === 'takase') {
-      this.dom.spriteTakase.classList.add('active');
-      if (speaker === '高瀬') this.dom.spriteTakase.classList.add('talking');
+      this.spriteTakase.classList.add('active');
+      if (speaker === '高瀬') this.spriteTakase.classList.add('talking');
     } else if (chara === 'yui') {
-      this.dom.spriteYui.classList.add('active');
-      if (speaker === '由衣') this.dom.spriteYui.classList.add('talking');
+      this.spriteYui.classList.add('active');
+      if (speaker === '由衣') this.spriteYui.classList.add('talking');
     } else if (chara === 'both') {
-      this.dom.spriteTakase.classList.add('active');
-      this.dom.spriteYui.classList.add('active');
+      this.spriteTakase.classList.add('active');
+      this.spriteYui.classList.add('active');
     }
   }
 
-  typeText(text, onComplete) {
+  typewrite(text, onComplete) {
     this.isTyping = true;
-    this.currentFullText = text;
-    this.dom.dialogueText.textContent = '';
-    let idx = 0;
+    this.currentText = text;
+    this.dialogueText.innerText = '';
+    let i = 0;
 
-    if (this.typingTimer) clearInterval(this.typingTimer);
+    if (this.typeTimer) clearInterval(this.typeTimer);
 
-    this.typingTimer = setInterval(() => {
-      if (idx < text.length) {
-        this.dom.dialogueText.textContent += text[idx];
-        idx++;
-      } else {
-        clearInterval(this.typingTimer);
+    this.typeTimer = setInterval(() => {
+      this.dialogueText.innerText += text[i];
+      i++;
+      if (i >= text.length) {
+        clearInterval(this.typeTimer);
+        this.typeTimer = null;
         this.isTyping = false;
         if (onComplete) onComplete();
       }
     }, 28);
   }
 
-  handleAdvance() {
-    window.sound.playTap();
+  onAdvance() {
+    const currentScene = this.scenario.scenes[this.currentSceneId];
+    const step = currentScene[this.currentIndex];
 
-    // タイピング途中なら全文即時表示
+    // 選択肢表示中は何もしない
+    if (step.choices && step.choices.length > 0 && !this.choicesOverlay.classList.contains('hidden')) {
+      return;
+    }
+
+    // タイプ中なら全文一括表示
     if (this.isTyping) {
-      clearInterval(this.typingTimer);
-      this.dom.dialogueText.textContent = this.currentFullText;
+      clearInterval(this.typeTimer);
+      this.typeTimer = null;
+      this.dialogueText.innerText = this.currentText;
       this.isTyping = false;
+      if (step.choices && step.choices.length > 0) {
+        this.showChoices(step.choices);
+      } else if (this.isAuto) {
+        this.scheduleAutoNext();
+      }
       return;
     }
 
-    const scene = window.SCENARIO_DATA.scenes[this.currentSceneId];
-    const step = scene[this.stepIndex];
-
-    if (step.choices && step.choices.length > 0) return;
-
+    // エンディング時
     if (step.isEnd) {
-      this.returnToTitle();
+      this.titleScreen.classList.remove('hidden');
+      this.titleScreen.style.opacity = '1';
       return;
     }
 
+    // 次のシーン遷移
     if (step.nextScene) {
-      this.currentSceneId = step.nextScene;
-      this.stepIndex = 0;
-    } else {
-      this.stepIndex++;
+      this.loadScene(step.nextScene, 0);
+      return;
     }
 
-    this.renderCurrentStep();
+    // 次のステップ
+    const nextIdx = this.currentIndex + 1;
+    if (nextIdx < currentScene.length) {
+      this.currentIndex = nextIdx;
+      this.renderStep(currentScene[nextIdx]);
+    }
   }
 
   showChoices(choices) {
-    this.dom.choicesList.innerHTML = '';
-    choices.forEach((choice) => {
+    this.choicesList.innerHTML = '';
+    choices.forEach(ch => {
       const btn = document.createElement('button');
       btn.className = 'choice-btn';
-      btn.textContent = choice.text;
+      btn.innerText = ch.text;
       btn.addEventListener('click', (e) => {
         e.stopPropagation();
         window.sound.playTap();
-        this.dom.choicesOverlay.classList.add('hidden');
-        this.currentSceneId = choice.target;
-        this.stepIndex = 0;
-        this.renderCurrentStep();
+        this.choicesOverlay.classList.add('hidden');
+        this.loadScene(ch.target, 0);
       });
-      this.dom.choicesList.appendChild(btn);
+      this.choicesList.appendChild(btn);
     });
-    this.dom.choicesOverlay.classList.remove('hidden');
-  }
-
-  flashScreen() {
-    this.dom.screenFlash.style.opacity = '0.7';
-    setTimeout(() => {
-      this.dom.screenFlash.style.opacity = '0';
-    }, 300);
-  }
-
-  triggerPulse() {
-    if (window.onHeartbeatTrigger) {
-      window.onHeartbeatTrigger();
-    }
-  }
-
-  toggleAuto() {
-    this.isAuto = !this.isAuto;
-    this.dom.btnAuto.classList.toggle('active', this.isAuto);
-    if (this.isAuto && !this.isTyping) {
-      this.scheduleAutoNext();
-    } else if (!this.isAuto && this.autoTimer) {
-      clearTimeout(this.autoTimer);
-    }
+    this.choicesOverlay.classList.remove('hidden');
   }
 
   scheduleAutoNext() {
     if (this.autoTimer) clearTimeout(this.autoTimer);
     this.autoTimer = setTimeout(() => {
-      if (this.isAuto) this.handleAdvance();
-    }, 2200);
+      if (this.isAuto) {
+        this.onAdvance();
+      }
+    }, 2400);
   }
 
   openLog() {
-    this.dom.logList.innerHTML = '';
-    this.backlog.forEach((entry) => {
-      const item = document.createElement('div');
-      item.className = 'log-entry';
-      const spk = document.createElement('div');
-      spk.className = `log-speaker ${entry.speaker === '由衣' ? 'yui' : entry.speaker ? 'takase' : 'monologue'}`;
-      spk.textContent = entry.speaker || '――';
-      const txt = document.createElement('div');
-      txt.className = 'log-text';
-      txt.textContent = entry.text;
-      item.appendChild(spk);
-      item.appendChild(txt);
-      this.dom.logList.appendChild(item);
+    this.logList.innerHTML = '';
+    this.backlog.forEach(item => {
+      const div = document.createElement('div');
+      div.className = 'log-entry';
+      div.innerHTML = `<div class="log-speaker ${item.speaker === '由衣' ? 'yui' : ''}">${item.speaker}</div><div class="log-text">${item.text}</div>`;
+      this.logList.appendChild(div);
     });
-    this.dom.logOverlay.classList.remove('hidden');
-    this.dom.logList.scrollTop = this.dom.logList.scrollHeight;
-  }
-
-  openSecretNote(sessionId) {
-    const note = window.SCENARIO_DATA.secretNotes[sessionId];
-    if (!note) return;
-
-    alert(`${note.title}\n\n${note.publicNote}\n\n${note.secretNote}`);
-  }
-
-  returnToTitle() {
-    this.dom.titleScreen.classList.remove('hidden');
-    setTimeout(() => {
-      this.dom.titleScreen.style.opacity = '1';
-    }, 50);
+    this.logOverlay.classList.remove('hidden');
+    this.logList.scrollTop = this.logList.scrollHeight;
   }
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-  window.game = new NovelEngine();
+  window.game = new GameEngine();
 });
