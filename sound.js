@@ -42,6 +42,7 @@ class SoundEngine {
     master.gain.exponentialRampToValueAtTime(0.12, this.ctx.currentTime + 3);
     master.connect(this.ctx.destination);
     this.bgmGain = master;
+    this.bgmOscs = [];
 
     // 低域ドローン音
     const freqs = [55, 110, 164.81]; // A1, A2, E3 (落ち着きと熱情の和音)
@@ -62,12 +63,22 @@ class SoundEngine {
       filter.connect(g);
       g.connect(master);
       osc.start();
+      this.bgmOscs.push(osc);
     });
   }
 
   stopAmbient() {
     if (this.bgmGain && this.ctx) {
-      this.bgmGain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 1);
+      this.bgmGain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.5);
+    }
+    if (this.bgmOscs) {
+      const oscs = this.bgmOscs;
+      setTimeout(() => {
+        oscs.forEach(osc => {
+          try { osc.stop(); osc.disconnect(); } catch (e) {}
+        });
+      }, 600);
+      this.bgmOscs = [];
     }
     this.isPlayingBGM = false;
   }

@@ -307,6 +307,7 @@ html, body {
   letter-spacing: 0.8px;
   color: var(--text-primary);
   word-break: break-word;
+  white-space: pre-line;
 }
 
 #next-cursor {
@@ -422,6 +423,7 @@ html, body {
 .log-entry {
   font-size: 14px;
   line-height: 1.8;
+  white-space: pre-line;
 }
 
 .log-speaker {

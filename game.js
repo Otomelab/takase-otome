@@ -105,12 +105,28 @@ class NovelEngine {
     setTimeout(() => {
       this.titleScreen.classList.add('hidden');
     }, 800);
+    // 状態の完全初期化
+    this.history = [];
+    this.currentSessionKey = 'session1';
+    this.stepIndex = 0;
+    if (this.autoTimer) { clearTimeout(this.autoTimer); this.autoTimer = null; }
+    if (this.isAuto) {
+      this.isAuto = false;
+      this.btnAuto.classList.remove('active');
+    }
     this.loadScene(this.scenario.startScene, 0);
   }
 
   loadScene(sceneId, step = 0) {
     this.currentSceneId = sceneId;
     this.stepIndex = step;
+
+    // シーンIDから現在セッションを即時判別して裏カルテのズレを解消
+    const m = sceneId.match(/session([1-7])/);
+    if (m) {
+      this.currentSessionKey = 'session' + m[1];
+    }
+
     this.renderCurrentStep();
   }
 
@@ -134,7 +150,7 @@ class NovelEngine {
 
     // エフェクト
     if (item.effect === 'pulse') {
-      window.sound.playHeartbeatThump();
+      // 二重発音を防止しUIフラッシュのみ連動
       window.onHeartbeatTrigger();
     } else if (item.effect === 'flash') {
       this.flashLayer.style.opacity = '0.8';
@@ -278,6 +294,7 @@ class NovelEngine {
 
   onAdvance() {
     window.sound.playTap();
+    if (this.autoTimer) { clearTimeout(this.autoTimer); this.autoTimer = null; }
 
     // タイピング中なら一瞬で全表示
     if (this.isTyping) {
@@ -289,6 +306,8 @@ class NovelEngine {
       const item = scene[this.stepIndex];
       if (item.choices && item.choices.length > 0) {
         this.showChoices(item.choices);
+      } else if (this.isAuto) {
+        this.startAutoTimer();
       }
       return;
     }

@@ -152,7 +152,7 @@ window.SCENARIO_SESSION7 = {
         bg: 'assets/title_bg.png',
         chara: 'takase',
         speaker: '',
-        text: '【店じまいの合図 / 全7セッション完結】\n二人の境界線は完全に溶け合いました。\n画面右上の「📋 カルテ」から高瀬の最終裏カルテを閲覧できます。',
+        text: '【店じまいの合図 / 全7セッション完結】\n二人の境界線は完全に溶け合いました。\n画面右上の「♥ BPM（カルテ）」から高瀬の最終裏カルテを閲覧できます。',
         bpm: 78,
         isSessionEnd: true,
         sessionKey: 'session7'

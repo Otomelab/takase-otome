@@ -141,7 +141,7 @@ window.SCENARIO_SESSION3 = {
         bg: 'assets/title_bg.png',
         chara: 'takase',
         speaker: '',
-        text: '【Session 3 終了】\n画面右上の「📋 カルテ」から高瀬の裏カルテ（第3回）を閲覧できます。',
+        text: '【Session 3 終了】\n画面右上の「♥ BPM（カルテ）」から高瀬の裏カルテ（第3回）を閲覧できます。',
         bpm: 78,
         isSessionEnd: true,
         sessionKey: 'session3',

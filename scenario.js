@@ -203,7 +203,7 @@ window.SCENARIO_DATA = {
         bg: 'assets/bed.png',
         chara: null,
         speaker: '',
-        text: 'Tシャツの上から、高瀬の厚みのある温かい掌が肩から背中へと置かゎる。無駄のない的確な圧が加わるたび、痛気持ちいい快感が背筋を駆け抜ける。',
+        text: 'Tシャツの上から、高瀬の厚みのある温かい掌が肩から背中へと置かれる。無駄のない的確な圧が加わるたび、痛気持ちいい快感が背筋を駆け抜ける。',
         bpm: 115,
         effect: 'pulse'
       },
@@ -222,14 +222,14 @@ window.SCENARIO_DATA = {
         bg: 'assets/bed.png',
         chara: 'takase',
         speaker: '高瀬',
-        text: '逘慧しなくていいのに。プランに含まれてるんだから、使わないと損ですよ？',
+        text: '遠慮しなくていいのに。プランに含まれてるんだから、使わないと損ですよ？',
         bpm: 115
       },
       {
         bg: 'assets/bed.png',
         chara: 'takase',
         speaker: '',
-        text: '有無を言わせずベッドへ促され、由衣は観念して横たわった。高瀬の手が首筋から肩のラインを丁寧になぞるようにほあしていく。プロの技術に、強張っていた身体がじんわりとほどけていく。',
+        text: '有無を言わせずベッドへ促され、由衣は観念して横たわった。高瀬の手が首筋から肩のラインを丁寧になぞるようにほぐしていく。プロの技術に、強張っていた身体がじんわりとほどけていく。',
         bpm: 112,
         nextScene: 'session1_wrapup'
       }
@@ -240,7 +240,7 @@ window.SCENARIO_DATA = {
         bg: 'assets/bg_entrance.png',
         chara: 'takase',
         speaker: '高瀬',
-        text: 'はい、今日の初回セッションはここまです。お疲れさまでした！',
+        text: 'はい、今日の初回セッションはここまでです。お疲れさまでした！',
         bpm: 85
       },
       {
@@ -275,7 +275,7 @@ window.SCENARIO_DATA = {
         bg: 'assets/title_bg.png',
         chara: 'takase',
         speaker: '',
-        text: '【Session 1 終了】\n画面右上の「📋 カルテ」または下のボタンから高瀬の裏カルテを閲覧できます。',
+        text: '【Session 1 終了】\n画面右上の「♥ BPM（カルテ）」から高瀬の裏カルテを閲覧できます。',
         bpm: 78,
         isSessionEnd: true,
         sessionKey: 'session1',
