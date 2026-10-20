@@ -456,8 +456,8 @@ html, body {
 .title-bg {
   position: absolute;
   inset: 0;
-  background: url('assets/takase_main.png') center top / cover no-repeat;
-  filter: brightness(0.4) saturate(0.8);
+  background: url('assets/title_bg.png') center center / cover no-repeat;
+  filter: brightness(0.65) saturate(1.05);
   z-index: 1;
 }
 
