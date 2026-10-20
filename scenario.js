@@ -4,6 +4,7 @@
 window.SCENARIO_DATA = {
   startScene: 'session1_intro',
   scenes: {
+    // ===== SESSION 1: 初回お得体験プラン =====
     session1_intro: [
       {
         bg: 'assets/scene_1.png',
@@ -58,7 +59,7 @@ window.SCENARIO_DATA = {
         bg: 'assets/scene_1.png',
         chara: 'takase',
         speaker: '高瀬',
-        text: 'お、やる気満々ですね。いいですよ、じゃあまずはガッツリ下半身から動かして代謝上げていきましょうか',
+        text: 'お、やる気満々ですね。いいですよ、じゃあまずはガッツリ下半身から動かして、代謝上げていきましょうか',
         bpm: 88,
         nextScene: 'session1_training'
       }
@@ -95,7 +96,7 @@ window.SCENARIO_DATA = {
         bg: 'assets/scene_1.png',
         chara: null,
         speaker: '',
-        text: 'タイマーのブザーが鳴り、由衣はその場へへたり込みそうになった。膝が小鹿のように細かく震えている。',
+        text: 'タイマーのブザーが鳴り、由衣はその場にへたり込みそうになった。膝が小鹿のように細かく震えている。',
         bpm: 120,
         effect: 'pulse'
       },
@@ -147,97 +148,115 @@ window.SCENARIO_DATA = {
         bg: 'assets/scene_1.png',
         chara: 'takase',
         speaker: '高瀬',
-        text: 'ふーん……そうなんですかね。ま、そういうことにしときますか',
-        bpm: 130
-      },
-      {
-        bg: 'assets/scene_2.png',
-        chara: 'takase',
-        speaker: '高瀬',
-        text: '今日は初回プランの特典で、整体のチェックも10分ついてます。奥のベッド、どうぞ。固まったところだけ緩めましょう',
+        text: 'ふーん……そうなんですかね。ま、そういうことにしておきます。……せっかくだから特典の整体、軽く肩と背中流して終わりにしましょうか',
         bpm: 125,
-        choices: [
-          { text: '素直に促されるまま施術ベッドへ向かう', target: 'session1_massage_a' },
-          { text: '「やっぱり今日はもう大丈夫です」と身構える', target: 'session1_massage_b' }
-        ]
+        nextScene: 'session1_stretch'
       }
     ],
 
-    session1_massage_a: [
+    session1_stretch: [
       {
         bg: 'assets/scene_2.png',
         chara: 'takase',
         speaker: '',
-        text: '施術台にうつ伏せになり、サロン貸出のTシャツ越しに背中を預ける。高瀬の厚みのある両手が肩甲骨から腰へと触れてきた。',
+        text: '施術台に座らされ、高瀬が背後に回る。シャツの上から肩甲骨のキワに親指が深く沈み込んだ。',
         bpm: 120
       },
       {
         bg: 'assets/scene_2.png',
-        chara: 'takase',
-        speaker: '高瀬',
-        text: 'わ、背中バキバキ。力抜いてくださいね。息吐いて……そう、深く',
-        bpm: 115
+        chara: 'yui',
+        speaker: '由衣',
+        text: 'あっ……痛っ、そこ……！',
+        bpm: 128,
+        effect: 'pulse'
       },
       {
         bg: 'assets/scene_2.png',
-        chara: 'yui',
-        speaker: '由衣',
-        text: 'あっ……んっ……そこ、すごく響きます……',
-        bpm: 122,
-        effect: 'pulse',
-        nextScene: 'session1_ending'
-      }
-    ],
-
-    session1_massage_b: [
-      {
-        bg: 'assets/scene_2.png',
         chara: 'takase',
         speaker: '高瀬',
-        text: '身構えなくて大丈夫ですよ。取って食ったりしないんで。……ほら、足首だけ触りますから',
-        bpm: 125
+        text: '息吐いて。力抜かないと奥まで届かない。……ほら、肩上がってる。リラックス',
+        bpm: 122
       },
       {
         bg: 'assets/scene_2.png',
         chara: 'takase',
         speaker: '',
-        text: 'ベッドの縁に腰掛けさせられ、足裏とアキレス腱を的確な圧で揉みほぐされる。触れられた瞬間、じんわりと温かい熱が広がっていく。',
-        bpm: 118,
-        effect: 'pulse',
-        nextScene: 'session1_ending'
-      }
-    ],
-
-    session1_ending: [
+        text: '耳元すぐ近くで囁かれる低い声。的確すぎる指先の圧に、由衣は情けなく息を漏らしながら、言われるがまま身体の力を抜いていった。',
+        bpm: 118
+      },
       {
-        bg: 'assets/scene_1.png',
+        bg: 'assets/scene_2.png',
         chara: 'takase',
         speaker: '高瀬',
-        text: 'はい、今日の初回セッションはここまでです！ お疲れさまでした',
-        bpm: 85
+        text: 'はい、今日はおしまいです。……あ、うちは月額とか会員制の縛りはやってないんで。また身体がキツくなったら、都度LINEで連絡くれれば枠取りますよ',
+        bpm: 95
       },
       {
-        bg: 'assets/scene_1.png',
+        bg: 'assets/scene_2.png',
         chara: 'takase',
         speaker: '高瀬',
-        text: 'うちは月額とか会員の縛りやってないんで。都度払い制ですから、身体キツくなったらまたLINEでいつでも連絡してくださいね',
-        bpm: 82
+        text: 'もし宜しければ、無理せず自分のペースで使ってくださいね。お疲れさまでした！',
+        bpm: 88
       },
       {
-        bg: 'assets/scene_1.png',
-        chara: 'yui',
-        speaker: '由衣',
-        text: '（あんなに動揺させられたのに……最後はこんなに爽やかに帰されるんだ……）',
-        bpm: 90
-      },
-      {
-        bg: 'assets/scene_1.png',
+        bg: 'assets/takase_main.png',
         chara: null,
         speaker: '',
-        text: '【Session 1 終了】\nサロンを出た後の夜道、手首に残る温もりがいつまでも消えなかった。\n（画面をタップするとタイトルに戻ります。裏カルテが更新されました）',
-        bpm: 78,
+        text: 'あんなに近くで体温を感じて脈を測られたのに、最後はあっけないほど爽やかに送り出された。エレベーターを待つ間、由衣の右手首にはまだ高瀬の指の熱が焼き付いていた。',
+        bpm: 82,
+        nextScene: 'session1_line'
+      }
+    ],
+
+    // ===== LINE 幕間 =====
+    session1_line: [
+      {
+        bg: 'assets/yui_main.png',
+        chara: null,
+        speaker: '由衣の部屋（その夜）',
+        text: 'お風呂上がりのベッドの上。スマートフォンの画面が短く震えた。見覚えのないアイコン――高瀬からのLINEだった。',
+        bpm: 92,
+        effect: 'pulse'
+      },
+      {
+        bg: 'assets/yui_main.png',
+        chara: null,
+        speaker: '高瀬 航 [LINE]',
+        text: '『今日はお疲れさまでした！ 初回なのにしっかり動けてましたよ。明日たぶん内腿と肩甲骨周りに筋肉痛来ると思うんで、水分多めに摂ってゆっくり休んでくださいね』',
+        bpm: 105
+      },
+      {
+        bg: 'assets/yui_main.png',
+        chara: null,
+        speaker: '高瀬 航 [LINE]',
+        text: '『P.S. ……脈、次までに落ち着かせておいてくださいね（笑）』',
+        bpm: 122,
+        effect: 'pulse'
+      },
+      {
+        bg: 'assets/yui_main.png',
+        chara: null,
+        speaker: '',
+        text: '――からかわれてる。そう思いながらも、由衣の胸の奥は、昼間と同じように小さく跳ね上がっていた。',
+        bpm: 110
+      },
+      {
+        bg: 'assets/takase_main.png',
+        chara: 'takase',
+        speaker: '',
+        text: '【Session 1: 初回お得体験プラン 終了】\n画面右上の「裏カルテ」アイコンから、高瀬の非公開メモが閲覧可能になりました。',
+        bpm: 80,
         isEnd: true
       }
     ]
+  },
+
+  // ===== 高瀬の裏カルテ（隠しメモ） =====
+  secretNotes: {
+    session1: {
+      title: 'Session 1: 初回体験カルテ',
+      publicNote: '【主訴】デスクワークによる慢性的な肩こり・下半身の怠さ。\n【施術】自重スクワット、フォーム指導、肩甲骨周囲の軽擦・押圧。\n【方針】都度利用。まずは可動域改善と正しい呼吸の習得。',
+      privateNote: '『体を鍛えに来た』ってめちゃくちゃ身構えてて可愛い。\n手首取って脈測ったら135まで跳ね上がって動揺が丸わかりだった。\n肩触った時の息の漏れ方、完全に身体を委ねたいタイプの反応。\n次回はわざと追い込んでバテさせてから、整体の枠を広げて落とす。'
+    }
   }
 };
