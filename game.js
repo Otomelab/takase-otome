@@ -17,6 +17,8 @@ class NovelEngine {
     this.flashLayer = document.getElementById('screen-flash');
     this.spriteTakase = document.getElementById('sprite-takase');
     this.spriteYui = document.getElementById('sprite-yui');
+    this.imgTakase = document.getElementById('img-takase');
+    this.imgYui = document.getElementById('img-yui');
     this.speakerBadge = document.getElementById('speaker-badge');
     this.speakerName = document.getElementById('speaker-name');
     this.dialogueText = document.getElementById('dialogue-text');
@@ -130,7 +132,7 @@ class NovelEngine {
     }
 
     // 立ち絵
-    this.updateSprites(item.chara);
+    this.updateSprites(item.chara, item.pose || item.face || item.expression);
 
     // スピーカーバッジ
     this.speakerBadge.className = '';
@@ -159,11 +161,72 @@ class NovelEngine {
     });
   }
 
-  updateSprites(chara) {
+  updateSprites(chara, expression) {
     if (!chara) {
       this.spriteTakase.classList.remove('active', 'dimmed', 'talking');
       this.spriteYui.classList.remove('active', 'dimmed', 'talking');
       return;
+    }
+
+    // 表情差分パスのマッピング
+    const takaseExpressions = {
+      '真顔': 'assets/expressions/takase/01_真顔.png',
+      '笑顔': 'assets/expressions/takase/02_笑顔.png',
+      '怒り': 'assets/expressions/takase/03_怒り.png',
+      '驚き': 'assets/expressions/takase/04_驚き.png',
+      '照れ': 'assets/expressions/takase/05_照れ.png',
+      '困り': 'assets/expressions/takase/06_困り.png',
+      '楽しみ': 'assets/expressions/takase/07_楽しみ.png',
+      '不機嫌': 'assets/expressions/takase/08_不機嫌.png',
+      '色気': 'assets/expressions/takase/09_色気.png',
+      '甘え': 'assets/expressions/takase/10_甘え.png'
+    };
+
+    const yuiExpressions = {
+      '01': 'assets/expressions/yui/training_expression_01.png',
+      '満面笑顔': 'assets/expressions/yui/training_expression_01.png',
+      '笑顔': 'assets/expressions/yui/training_expression_01.png',
+      '02': 'assets/expressions/yui/training_expression_02.png',
+      '微笑み': 'assets/expressions/yui/training_expression_02.png',
+      '通常': 'assets/expressions/yui/training_expression_02.png',
+      '03': 'assets/expressions/yui/training_expression_03.png',
+      '照れ笑い': 'assets/expressions/yui/training_expression_03.png',
+      '嬉しい': 'assets/expressions/yui/training_expression_03.png',
+      '04': 'assets/expressions/yui/training_expression_04.png',
+      'しょんぼり': 'assets/expressions/yui/training_expression_04.png',
+      '哀': 'assets/expressions/yui/training_expression_04.png',
+      '05': 'assets/expressions/yui/training_expression_05.png',
+      'おちゃめ': 'assets/expressions/yui/training_expression_05.png',
+      '06': 'assets/expressions/yui/training_expression_06.png',
+      '怒り': 'assets/expressions/yui/training_expression_06.png',
+      'むすっ': 'assets/expressions/yui/training_expression_06.png',
+      '07': 'assets/expressions/yui/training_expression_07.png',
+      '困り顔': 'assets/expressions/yui/training_expression_07.png',
+      '泣きそう': 'assets/expressions/yui/training_expression_07.png',
+      '08': 'assets/expressions/yui/training_expression_08.png',
+      '困惑赤面': 'assets/expressions/yui/training_expression_08.png',
+      '赤面': 'assets/expressions/yui/training_expression_08.png',
+      '09': 'assets/expressions/yui/training_expression_09.png',
+      '照れ': 'assets/expressions/yui/training_expression_09.png',
+      '恥ずかしい': 'assets/expressions/yui/training_expression_09.png',
+      '10': 'assets/expressions/yui/training_expression_10.png',
+      '息切れ': 'assets/expressions/yui/training_expression_10.png',
+      '疲労': 'assets/expressions/yui/training_expression_10.png',
+      '11': 'assets/expressions/yui/training_expression_11_ganbaru.png',
+      '頑張る': 'assets/expressions/yui/training_expression_11_ganbaru.png',
+      '踏ん張る': 'assets/expressions/yui/training_expression_11_ganbaru.png'
+    };
+
+    if (chara === 'takase' || chara === 'both') {
+      if (expression && takaseExpressions[expression]) {
+        if (this.imgTakase) this.imgTakase.src = takaseExpressions[expression];
+      }
+    }
+
+    if (chara === 'yui' || chara === 'both') {
+      if (expression && yuiExpressions[expression]) {
+        if (this.imgYui) this.imgYui.src = yuiExpressions[expression];
+      }
     }
 
     if (chara === 'takase') {
