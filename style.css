@@ -131,11 +131,20 @@ html, body {
   transition: opacity 0.6s ease, transform 0.6s ease, filter 0.4s ease;
   opacity: 0;
   transform: translateY(20px) scale(0.96);
+  width: 48%;
 }
+
+/* 左右の定位置（重なり防止） */
+#sprite-yui    { left: 2%;  }
+#sprite-takase { right: 2%; }
+
+/* 1人だけ話している場面は中央に */
+#character-layer.solo .sprite.active { left: 26%; right: auto; }
+#character-layer.solo .sprite.dimmed { opacity: 0; }
 
 .sprite img {
   max-height: 70vh;
-  max-width: 90vw;
+  max-width: 100%;
   object-fit: contain;
   filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.7));
 }

@@ -191,6 +191,7 @@ class NovelEngine {
     if (!chara) {
       this.spriteTakase.classList.remove('active', 'dimmed', 'talking');
       this.spriteYui.classList.remove('active', 'dimmed', 'talking');
+      this.takaseOnStage = this.yuiOnStage = false;
       return;
     }
 
@@ -254,6 +255,14 @@ class NovelEngine {
         if (this.imgYui) this.imgYui.src = yuiExpressions[expression];
       }
     }
+
+    // 直前に登場していない相手は暗転表示せず隠す（重なり防止）
+    const layer = document.getElementById('character-layer');
+    const otherShown = chara === 'takase' ? this.yuiOnStage : this.takaseOnStage;
+    if (chara === 'takase') this.takaseOnStage = true;
+    if (chara === 'yui') this.yuiOnStage = true;
+    if (chara === 'both') { this.takaseOnStage = this.yuiOnStage = true; }
+    layer.classList.toggle('solo', chara !== 'both' && !otherShown);
 
     if (chara === 'takase') {
       this.spriteTakase.classList.add('active', 'talking');
